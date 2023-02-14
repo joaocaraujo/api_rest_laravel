@@ -6,24 +6,16 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Store;
 
-class StoreController extends Controller
+class ProductController extends Controller
 {
-    private $store;
-
-    public function __construct()
-    {
-        $this->store = new Store();
-    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Store $store)
     {
-        $stores = $this->store->paginate(10);
-
-        return response()->json($stores);
+        return $store->products;
     }
 
     /**
@@ -32,20 +24,24 @@ class StoreController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Store $store)
     {
-        return $this->store->create($request->all());
+        $product = $store->products()->create($request->all());
+    
+        return $product;
     }
-
+    
     /**
      * Display the specified resource.
      *
-     * @param  Store  $store
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Store $store)
+    public function show(Store $store, $id)
     {
-        return $store->with('products')->first();
+        $product = $store->products()->findOrFail($id);
+    
+        return $product;
     }
 
     /**
@@ -55,23 +51,26 @@ class StoreController extends Controller
      * @param  Store $store
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Store $store)
+    public function update(Request $request, Store $store, $id)
     {
-        $store->update($request->all());
-
-        return $store;
+        $product = $store->products()->findOrFail($id);
+        $product->update($request->all());
+    
+        return $product;
     }
+    
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Store $store
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Store $store)
+    public function destroy(Store $store, $id)
     {
-        return $store->delete($store);
-
+        $product = $store->products()->findOrFail($id);
+        $product->delete();
+    
         return "Deleted successfully";
     }
 }

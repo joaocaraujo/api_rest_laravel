@@ -19,3 +19,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('stores', \App\Http\Controllers\Api\StoreController::class);
+Route::apiResource('stores.products', \App\Http\Controllers\Api\ProductController::class);
+Route::apiResource('stores.products', \App\Http\Controllers\Api\ProductController::class)->except(['index']);
+Route::post('stores/{store}/products', [\App\Http\Controllers\Api\ProductController::class, 'store']);
+Route::get('stores/{store}/products/{id}', [\App\Http\Controllers\Api\ProductController::class, 'show']);
+Route::put('stores/{store}/products/{id}', [\App\Http\Controllers\Api\ProductController::class, 'update']);
+Route::delete('stores/{store}/products/{id}', [\App\Http\Controllers\Api\ProductController::class, 'destroy']);
+
